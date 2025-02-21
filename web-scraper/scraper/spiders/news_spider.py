@@ -8,7 +8,7 @@ class NewsSpider(scrapy.Spider):
 
     def __init__(self, query=None, *args, **kwargs):
         super(NewsSpider, self).__init__(*args, **kwargs)
-        self.search_query = f'https://news.google.com/search?q={query}'
+        self.search_query = f'https://news.google.com/search?q={query} when:1d' # get news from the past 1 day (use when:1h for past hour)
 
     def start_requests(self):
         req = scrapy.Request(url=self.search_query, callback=self.parse)
