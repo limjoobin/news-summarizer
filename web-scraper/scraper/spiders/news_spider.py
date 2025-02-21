@@ -18,13 +18,8 @@ class NewsSpider(scrapy.Spider):
         if response.status != 200:
             pass # Error handling?
 
-        page = response.url.split("/")[-2]
-        filename = f"quotes-{page}.html"
-        #out = response.css("body c-wiz main div c-wiz a::attr(href)").getall()
-        out = response.css("article a::attr(href)").getall()
-
+        out = response.css("main article a::attr(href)").getall()
         count = 0
-        
         for url in out:
             article = url.replace("\n", "").split("/")[-1]
             url = f"https://news.google.com/read/{article}"
@@ -33,8 +28,7 @@ class NewsSpider(scrapy.Spider):
             count += 1
             if count == 5: exit()
             yield scrapy.Request(url=url, callback = self.parse_article)
-            #Path(filename).write_text(url + "\n")
-        #
+
 
     def parse_article(self, response):
         # TODO: HANDLE FOR REDIRECT 302 (and possibly http 429)
