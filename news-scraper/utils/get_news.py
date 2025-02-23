@@ -1,14 +1,15 @@
-from typing import Generator
+from typing import AsyncGenerator
+import asyncio
 
-from pygooglenews import GoogleNews #TODO: find another way to search through google news without violating their robots.txt, and using
+from pygooglenews import GoogleNews #TODO: find another way to search through google news without violating their robots.txt (try: bing news api?)
 from googlenewsdecoder import new_decoderv1
 
 gn = GoogleNews(lang = 'en', country = 'US')
 INTERVAL_TIME = 5 # Recommended value to prevent rate limits
 
-def get_google_news(query: str) -> Generator[str, None, None]:
+async def get_google_news(query: str) -> AsyncGenerator[str, None]:
     """
-        Searches Google News (news.google.com) with a search query for related news in the past 1 hour and yields the url to the news articles
+        Searches Google News (news.google.com) with a search query for related news in the past 1 day and yields the url to the news articles
 
         Parameters
         ----------
@@ -20,13 +21,25 @@ def get_google_news(query: str) -> Generator[str, None, None]:
         Generator
             A generator that yields the url to the news articles
     """
-    resp = gn.search(query, when = '1h', helper = True)['entries']
-    count = 0
+    resp = gn.search(query, when = '1d', helper = True)['entries']
     for news in resp:
-        count += 1
-        if count == 3:
-            break
-        #print("Starting to decode ", news['link'])
-        url = new_decoderv1(news['link'], interval= INTERVAL_TIME)
-        #print("Finished decoding ",url)
-        yield url['decoded_url']
+        url = await decode_news_async(news)
+        yield url
+
+async def decode_news_async(news: str):
+    """
+        Decode the google news url (rss) to the url of the actual news article, in an async thread to ensure the INTERVAL_TIME is respected
+
+        Parameters
+        ----------
+        news: str
+            The url of the news article from google news
+        
+        Returns
+        -------
+        decoded_url: str
+            The url of the actual news article
+    """
+    result = await asyncio.to_thread(new_decoderv1, news['link'], interval= INTERVAL_TIME) 
+    decoded_url = result['decoded_url']
+    return decoded_url

@@ -1,4 +1,8 @@
 from bs4 import BeautifulSoup
+import asyncio
 
-def scrape_article(url: str):
-    ...
+async def scrape_article(url: str):
+    await asyncio.sleep(1)
+    # TODO
+    
+    return url 
