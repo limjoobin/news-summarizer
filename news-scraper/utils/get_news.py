@@ -1,5 +1,8 @@
 from typing import AsyncGenerator
 import asyncio
+import logging
+
+logger = logging.getLogger('get_news')
 
 from pygooglenews import GoogleNews #TODO: find another way to search through google news without violating their robots.txt (try: bing news api?)
 from googlenewsdecoder import new_decoderv1
@@ -22,8 +25,12 @@ async def get_google_news(query: str) -> AsyncGenerator[str, None]:
             A generator that yields the url to the news articles
     """
     resp = gn.search(query, when = '1d', helper = True)['entries']
+    count = 0
     for news in resp:
+        count += 1
+        if count == 3: break
         url = await decode_news_async(news)
+        logger.info(f"Obtained URL {url}")
         yield url
 
 async def decode_news_async(news: str):
