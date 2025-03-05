@@ -28,7 +28,7 @@ async def get_google_news(query: str) -> AsyncGenerator[str, None]:
     #print(gn.search(query, when = '1d', helper = True))
     for count, news in enumerate(resp):
         
-        #if count == 3: break
+        if count == 3: break
         #title = news['title']
         #published_time = news['published_parsed']
         #google_url = news['link']
