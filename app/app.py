@@ -14,7 +14,11 @@ def search_query(query: str) -> str:
 interface = gr.Interface(
     fn=search_query,
     inputs=["text"],
-    outputs=["text"]
+    outputs=["text"],
+    title= "News Summarizer",
+    description="Scraps the web for news articles and summarizes their content.",
+    article="Note that there will be a delay (of ~5s) for every article scraped"
+
 )
 
 if __name__ == '__main__':
