@@ -172,3 +172,6 @@ cython_debug/
 
 # log files
 .log
+
+# Large model files
+summarizer/bart-large-cnn
