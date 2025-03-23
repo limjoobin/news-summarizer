@@ -6,10 +6,13 @@ import orjson
 import httpx
 import gradio as gr
 
-NEWS_SCRAPER_URL = "http://localhost:8001/article-details"
-SUMMARIZER_URL = "http://localhost:8002/article-summary"
+#NEWS_SCRAPER_URL = "http://localhost:8001/article-details"
+#SUMMARIZER_URL = "http://localhost:8002/article-summary"
 
-async def get_stream_from_news_scraper(query: str, limit: int) -> AsyncGenerator[Dict[str]]:
+NEWS_SCRAPER_URL = "http://news-scraper:8000/article-details"
+SUMMARIZER_URL = "http://summarizer:8000/article-summary"
+
+async def get_stream_from_news_scraper(query: str, limit: int) -> AsyncGenerator[Dict[str, str], None]:
     """
         Obtains a stream of articles from the news scraping service.
 
