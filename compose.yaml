@@ -1,0 +1,21 @@
+services:
+  frontend:
+    build: ./app
+    ports: 
+      - "8000:7860"
+  news-scraper:
+    build: ./news-scraper
+    ports:
+      - "8001:8000"
+  summarizer:
+    build: ./summarizer
+    ports:
+      - "8002:8000"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: "all" # alternatively, use `count: all` for all GPUs
+              capabilities: [gpu]
+  
