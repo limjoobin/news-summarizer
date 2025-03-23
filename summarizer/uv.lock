@@ -6,6 +6,9 @@ resolution-markers = [
     "platform_machine == 'aarch64' and sys_platform == 'linux'",
     "(platform_machine != 'aarch64' and sys_platform == 'linux') or (sys_platform != 'darwin' and sys_platform != 'linux')",
 ]
+required-markers = [
+    "platform_machine == 'x86_64' and sys_platform == 'linux'",
+]
 
 [[package]]
 name = "aiohappyeyeballs"

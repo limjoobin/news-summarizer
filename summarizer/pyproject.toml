@@ -10,3 +10,8 @@ dependencies = [
     "uvicorn>=0.34.0",
     "vllm>=0.7.3",
 ]
+
+[tool.uv]
+required-environments = [
+    "sys_platform == 'linux' and platform_machine == 'x86_64'",
+]
