@@ -62,6 +62,7 @@ def get_summary(text: str) -> str:
 async def summarize_article(article: Article) -> Dict[str]:
     """
         API endpoint to get the article summary as the response
+        # TODO: INSTEAD OF USING FASTAPI, WHY NOT USE VLLM OPENAI-COMPATIBLE SERVER
 
         Parameters
         ----------
