@@ -47,7 +47,7 @@ EXPOSE 8000
 # To use the virtual environment from the project
 ENV PATH="/app/.venv/bin:$PATH"
 
-CMD bash -c source .venv/bin/activate && uvicorn main:app --host 0.0.0.0 --port 8000
+CMD bash -c "source .venv/bin/activate && uvicorn main:app --host 0.0.0.0 --port 8000"
 #CMD uvicorn main:app --host 0.0.0.0 --port 8000
 
     
