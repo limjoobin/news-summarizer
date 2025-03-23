@@ -7,4 +7,5 @@ requires-python = ">=3.12"
 dependencies = [
     "gradio>=5.20.0",
     "httpx>=0.28.1",
+    "orjson>=3.10.15",
 ]
