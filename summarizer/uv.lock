@@ -1804,6 +1804,7 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "fastapi" },
+    { name = "openai" },
     { name = "transformers" },
     { name = "uvicorn" },
     { name = "vllm" },
@@ -1812,6 +1813,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "fastapi", specifier = ">=0.115.11" },
+    { name = "openai", specifier = ">=1.65.4" },
     { name = "transformers", specifier = ">=4.49.0" },
     { name = "uvicorn", specifier = ">=0.34.0" },
     { name = "vllm", specifier = ">=0.7.3" },

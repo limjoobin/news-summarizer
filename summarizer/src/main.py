@@ -5,29 +5,61 @@ from fastapi import FastAPI
 import uvicorn
 from pydantic import BaseModel
 from transformers import AutoTokenizer
-from vllm import LLM, SamplingParams
+#from vllm import LLM, SamplingParams 
+from openai import OpenAI
 
 from utils import chunk_text
 
 app = FastAPI()
 
 # Attempt to load from a locally downloaded version of the model. If not found, download it from huggingface
-model_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "bart-large-cnn")
-model = model_dir if os.path.exists(model_dir) else "facebook/bart-large-cnn"
-llm = LLM(model=model, 
-          gpu_memory_utilization=0.7
-        )
+#model_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "bart-large-cnn")
+#model = model_dir if os.path.exists(model_dir) else "facebook/bart-large-cnn"
+model = "bart-large-cnn"
+# llm = LLM(model=model, 
+#           gpu_memory_utilization=0.7
+#         )
+
+openai_api_key = "EMPTY"
+openai_api_base = "http://vllm-server:8000/v1"
+client = OpenAI(
+    api_key=openai_api_key,
+    base_url=openai_api_base,
+)
+
 tokenizer = AutoTokenizer.from_pretrained(model)
 
-sampling_params = SamplingParams(
-                                temperature=0.8, 
-                                top_p=0.95,
-                                max_tokens=1024
-                            )
+
+# sampling_params = SamplingParams(
+#                                 temperature=0.8, 
+#                                 top_p=0.95,
+#                                 max_tokens=1024
+#                             )
 
 class Article(BaseModel):
     url: str
     paragraphs: List[str]
+
+def summarize_text(text: str):
+    """
+        Invokes the API at the vLLM server to summarize the text using the model served at the vLLM server.
+
+        Parameters
+        ----------
+        text: str
+            The text to summarize
+        
+        Returns
+        -------
+        response_text: str
+            The summarized text
+    """
+    response = client.completions.create(model=model,
+                                      prompt=f"Summarize: {text}",
+                                      temperature=0.8, 
+                                        top_p=0.95)
+    response_text = response.choices[0].text.strip()
+    return response_text
 
 def get_summary(text: str) -> str:
     """
@@ -49,17 +81,18 @@ def get_summary(text: str) -> str:
     chunks = chunk_text(text, tokenizer)
 
     # Get the summary of the chunk from the model (Do we need this if using bart?)
-    prompts = [f"Summarize: {chunk}" for chunk in chunks]
-    summarizer_output = llm.generate(prompts, sampling_params)
+    #prompts = [f"Summarize: {chunk}" for chunk in chunks]
+    #summarizer_output = llm.generate(prompts, sampling_params)
+    
 
     # Get the output from the model
-    article_summary = [output.outputs[0].text for output in summarizer_output]
+    article_summary = [summarize_text(chunk) for chunk in chunks]
     article_summary = " ".join(article_summary)
 
     return article_summary
 
 @app.post("/article-summary")
-async def summarize_article(article: Article) -> Dict[str]:
+async def summarize_article(article: Article) -> Dict[str, str]:
     """
         API endpoint to get the article summary as the response
         # TODO: INSTEAD OF USING FASTAPI, WHY NOT USE VLLM OPENAI-COMPATIBLE SERVER

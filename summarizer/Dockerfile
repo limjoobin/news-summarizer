@@ -25,14 +25,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-dev
 
 # Multi-stage build
-FROM nvidia/cuda:12.8.1-cudnn-runtime-ubuntu24.04
-
-# Install python 3.12
-RUN apt-get update && \
-    apt-get install -y software-properties-common && \
-    add-apt-repository -y ppa:deadsnakes/ppa && \
-    apt-get update && \
-    apt install -y python3.12
+FROM python:3.12-slim-bookworm
 
 WORKDIR /app
 
@@ -47,7 +40,6 @@ EXPOSE 8000
 # To use the virtual environment from the project
 ENV PATH="/app/.venv/bin:$PATH"
 
-CMD bash -c "source .venv/bin/activate && uvicorn main:app --host 0.0.0.0 --port 8000"
-#CMD uvicorn main:app --host 0.0.0.0 --port 8000
+CMD uvicorn main:app --host 0.0.0.0 --port 8000
 
     
