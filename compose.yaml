@@ -11,11 +11,16 @@ services:
     build: ./summarizer
     ports:
       - "8002:8000"
+  vllm-server:
+    image: vllm/vllm-openai:v0.6.6
+    container_name: vllm-server
+    ports:
+      - "8003:8000"
+    ipc: host
+    command: ["--model", "facebook/bart-large-cnn", "--served-model-name", "bart-large-cnn"]
     deploy:
       resources:
         reservations:
           devices:
-            - driver: nvidia
-              count: "all" # alternatively, use `count: all` for all GPUs
-              capabilities: [gpu]
+            - capabilities: [gpu]
   
