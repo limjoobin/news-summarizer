@@ -27,7 +27,7 @@ client = OpenAI(
     base_url=openai_api_base,
 )
 
-tokenizer = AutoTokenizer.from_pretrained(model)
+tokenizer = AutoTokenizer.from_pretrained("facebook/bart-large-cnn")
 
 
 # sampling_params = SamplingParams(
