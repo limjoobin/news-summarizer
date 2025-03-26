@@ -1,12 +1,19 @@
 from __future__ import annotations
 from typing import List
+import os
+
+from transformers import PreTrainedTokenizerFast
+
+# TOKENIZER
+tokenizer_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), "tokenizer.json")
+tokenizer = PreTrainedTokenizerFast(tokenizer_file=tokenizer_file)
 
 # TODO: maybe instead of setting hard limits for the chunks, try to decide it based on the average number of chunks in each paragraph.
 CHUNK_TOKEN_LIMIT = 200
 CHUNK_OVERLAP = 2
 MAX_PARA_IN_CHUNK = CHUNK_OVERLAP * 2 + 1 # To prevent too many paragraphs being in the same chunk, resulting in loss of information post summarization
 
-def count_text_tokens(text: str, tokenizer: transformers.AutoTokenizer) -> int:
+def count_text_tokens(text: str) -> int:
     """
         Counts the number of tokens in the text.
 
@@ -27,7 +34,7 @@ def count_text_tokens(text: str, tokenizer: transformers.AutoTokenizer) -> int:
     num_tokens = len(tokens)
     return num_tokens
 
-def chunk_text(text: str, tokenizer: transformers.AutoTokenizer) -> List[str]:
+def chunk_text(text: str) -> List[str]:
     """
         Chunks the article text to make it easier to summarize, and for the text to fit within the token limit of the summarizer.
         This ensures that the text passed into the summarizer is not too long, and will not result in loss of information post summarization

@@ -24,6 +24,12 @@ COPY . /app
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-dev
 
+# Install curl
+RUN apt-get update && apt-get install -y curl
+
+# Download tokenizer from bart-large-cnn
+RUN curl -O --output-dir src/utils https://huggingface.co/facebook/bart-large-cnn/resolve/main/tokenizer.json
+
 # Multi-stage build
 FROM python:3.12-slim-bookworm
 
