@@ -1,11 +1,9 @@
 from typing import List, Dict
-import os
 
 from fastapi import FastAPI
 import uvicorn
 from pydantic import BaseModel
-from transformers import AutoTokenizer
-#from vllm import LLM, SamplingParams 
+
 from openai import OpenAI
 
 from utils import chunk_text
@@ -16,9 +14,6 @@ app = FastAPI()
 #model_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "bart-large-cnn")
 #model = model_dir if os.path.exists(model_dir) else "facebook/bart-large-cnn"
 model = "bart-large-cnn"
-# llm = LLM(model=model, 
-#           gpu_memory_utilization=0.7
-#         )
 
 openai_api_key = "EMPTY"
 openai_api_base = "http://vllm-server:8000/v1"
@@ -26,15 +21,6 @@ client = OpenAI(
     api_key=openai_api_key,
     base_url=openai_api_base,
 )
-
-tokenizer = AutoTokenizer.from_pretrained("facebook/bart-large-cnn")
-
-
-# sampling_params = SamplingParams(
-#                                 temperature=0.8, 
-#                                 top_p=0.95,
-#                                 max_tokens=1024
-#                             )
 
 class Article(BaseModel):
     url: str
@@ -78,12 +64,7 @@ def get_summary(text: str) -> str:
             The summarized article
     """
     # Chunk the text such that the number of tokens fit within the token limits of the model
-    chunks = chunk_text(text, tokenizer)
-
-    # Get the summary of the chunk from the model (Do we need this if using bart?)
-    #prompts = [f"Summarize: {chunk}" for chunk in chunks]
-    #summarizer_output = llm.generate(prompts, sampling_params)
-    
+    chunks = chunk_text(text)
 
     # Get the output from the model
     article_summary = [summarize_text(chunk) for chunk in chunks]

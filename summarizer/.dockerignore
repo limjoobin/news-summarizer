@@ -1,2 +1,3 @@
 .venv
 **/tokenizer.json
+**/bart-large-cnn/
